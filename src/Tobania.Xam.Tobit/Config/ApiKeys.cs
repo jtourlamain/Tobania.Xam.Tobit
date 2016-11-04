@@ -3,8 +3,8 @@ namespace Tobania.Xam.Tobit.Config
 {
 	public static class ApiKeys
 	{
-		public const string ClientId = "<YOUR-CLIENT-ID>";
-		public const string ClientSecret = "<YOUR-CLIENT-SECRET>";
+		public const string ClientId = "<YOUR-CLIENT-ID-FROM-GITHUB>";
+		public const string ClientSecret = "<YOUR-CLIENT-SECRET-FROM-GITHUB>";
 		public const string RedirectUrl = "<YOUR-REDIRECT-URL>";
 		public const string Scope = "user repo";
 		public const string AuthorizeUrl = "https://github.com/login/oauth/authorize";

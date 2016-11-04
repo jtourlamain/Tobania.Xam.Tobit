@@ -1,10 +1,6 @@
 ### Ignore Xamarin Android Resource.Designer.cs file
 Resource.Designer.cs
 
-### Ignore ApiKeys.cs file
-ApiKeys.cs
-
-
 
 
 # Created by https://www.gitignore.io/api/visualstudio,visualstudiocode,windows,osx
