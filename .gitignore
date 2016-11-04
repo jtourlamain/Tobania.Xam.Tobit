@@ -1,6 +1,9 @@
 ### Ignore Xamarin Android Resource.Designer.cs file
 Resource.Designer.cs
 
+### Ignore ApiKeys.cs file
+ApiKeys.cs
+
 
 
 
