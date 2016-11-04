@@ -9,7 +9,9 @@ Start by creating a new Xamarin.Forms solution "Tobania.Xam.Tobit". Make sure to
 
 ### Organize your project in solution folders
 Start creating 2 solution folders: "Shared" and "Targets"
+
 ![add solution folder](art/xs_addSolutionFolder.png)
+
 When creating Tests (automated UI tests or unit tests) you can create a thrid folder "Tests".
 Move the iOS and Droid project to the "Targets" folder and the "Tobania.Xam.Tobit" project to the "Shared" folder.
 

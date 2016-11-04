@@ -5,6 +5,8 @@
 When creating enterprise mobile apps you need to consider a lot more than Hello World: how can you structure your code, how do you cope with connectivity problems, what if you don’t have a connection at all, how can you show your data faster,…
 This repository might be a start after your "Hello World with Xamarin" is over.
 
+Because I wanted to show you a working example, this repository contains a Xamarin.Forms app that shows your GitHub repositories.
+
 
 ## Getting started
 - A tutorial can be found in the docs of this repo: [docs/tutorial.md](docs/tutorial.md)
