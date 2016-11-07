@@ -129,6 +129,33 @@ public GitHubServiceAgent()
 ### ModernHttpClient
 As mentioned in the Fusillade section Xamarin uses the Mono Network stack. We want to use the faster native network stacks. For that reason we use ModernHttpClient
 - Install the NuGet package Modernhttpclient (version 2.4.2).
+- Our code still gives an error on the ApiHandler. Create a new folder Helpers in the ServiceAgents folder and add a C#-file with name ApiHelper.
+- Your ApiHandler class must inherit from NativeMessageHandler (comes with the ModernHttpClient package)
+- In the constructor we accept the func to get the token
+```C#
+private readonly Func<string> getToken;
+
+public ApiHandler(Func<string> getToken)
+{
+    this.getToken = getToken;
+}
+```
+- Override the SendAsync method and check if you need to add the token before the request is actually made
+```C#
+protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
+{
+    var auth = request.Headers.Authorization;
+    if (auth != null)
+    {
+        var token = getToken();//.ConfigureAwait(false);
+        request.Headers.Authorization = new AuthenticationHeaderValue(auth.Scheme, token);
+    }
+    return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+}
+```
+
+### Service calls
+
 
 
 
