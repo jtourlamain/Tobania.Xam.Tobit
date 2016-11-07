@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+		xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+		x:Class="Tobania.Xam.Tobit.UI.ReposCell">
+	<ContentView.Content>
+		<StackLayout Margin="20,0,20,0">
+			<Label x:Name="RepoName" Text="Name" FontSize="Small" />
+			<Label x:Name="RepoFullName" Text="Full" FontSize="Micro" />
+		</StackLayout>
+	</ContentView.Content>
+</ContentView>

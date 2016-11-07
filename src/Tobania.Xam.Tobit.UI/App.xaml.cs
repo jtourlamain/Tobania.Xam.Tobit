@@ -8,7 +8,7 @@ namespace Tobania.Xam.Tobit.UI
 		{
 			InitializeComponent();
 
-
+			MainPage = new NavigationPage(new HomePage());
 		}
 
 		protected override void OnStart()

@@ -1,5 +1,10 @@
 # Authorize your app within GitHub
 
+## Overview
+
+Nowadays almost all online services have an API. In this tutorial we'll make use of the GitHub API.
+Before we can talk to the API we need to setup our account to allow an application to communicate with the API.
+
 ## Steps
 - Login with your GitHub account
 - Go to your settings
@@ -15,3 +20,6 @@
 ![Register your app](art/github_registerApp.png) 
 
 ![Registered app](art/github_registeredApp.png)
+
+## GitHub API
+Info about the GitHub API can be found on [https://developer.github.com/v3/](https://developer.github.com/v3/)

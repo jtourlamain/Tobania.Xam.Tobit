@@ -47,6 +47,23 @@ By separating your UI from the other projects you'll be forced to respect that p
 - In the iOS and Droid project add a folder:
     - Renderers
 
+### Change your app name
+If you build your Android app and run it, you'll notice that it didn't get the name "Tobit", but "Tobania.Xam.Tobit.Droid".
+We want to change the application name throughout the application.
+- in your android project add a new strings.xml file in Resources/values. Verify that the build action in the properties of the file is set to "AndroidResource".
+- add the app name
+```html
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+  <string name="app_name">Tobit</string>
+</resources>
+```
+- Open the MainActivity file and change the app name in the Activity attribute
+```C#
+[Activity(Label = "@string/app_name", ...
+```
+- In the properties of your android project set the Application name to "@string/app_name".
+
 ### Result
 Your basic solution should now look like:
 
