@@ -10,7 +10,6 @@ namespace Tobania.Xam.Tobit.UI
 		public ReposPage()
 		{
 			InitializeComponent();
-			ReposList.ItemsSource = new List<string>() { "one", "two" };
 		}
 	}
 }
