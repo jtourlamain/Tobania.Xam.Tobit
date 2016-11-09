@@ -168,7 +168,7 @@ public interface IGitHubService
 }
 ```
 - Now add another file in the same folder with name "GitHubService" and inherit from the "IGitHubService" interface.
-- Make sure the constructor accepts an "IGitHubServiceAgent" so you can make use of the priority features that fussilade gives us.
+- Make sure the constructor accepts an "IGitHubServiceAgent" so you can make use of the priority features that fussilade gives us
 ```C#
 private IGitHubServiceAgent serviceAgent;
 
