@@ -246,3 +246,37 @@ public async Task<List<GitHubRepo>> GetReposAsync()
 }
 ```
 
+### Caching
+You should avoid requesting the data all the time by caching it. Your users will be grateful that you don't spoil their data plan, they will have the impression that your app runs faster and less calls to your backend means less costs.
+For caching we'll make use of Akavache. Behind the scenes akavache makes use of SQLite. Optimizing your code to use SQLite is hard. The Akavache library contains all the hard work, so our job gets a lot easier.
+
+- Install the NuGet package Akavache (4.1.2) (you also need to install this package in the UI project)
+- In the App.cs constructor set the akavache application name
+```C#
+BlobCache.ApplicationName = AppKeys.ApplicationName;
+```
+- Create a new C#-file "AppKeys.cs" in the config folder of the project Tobania.Xam.Tobit
+```C#
+public static class AppKeys
+{
+    public const string ApplicationName = "EntDemo";
+}
+```
+- Now we'll change our GitHubService class to use the cached version of the data and retrieve the real data async if the data in the cache is older than 5 seconds. First in the GitHubService class change the methodname "GetReposAsync" to "GetRemoteReposAsync"
+- Add a GetReposAsync method with the same signature as before and request the data from the cache
+```C#
+public async Task<List<GitHubRepo>> GetReposAsync()
+		{
+			var cachedRepos = BlobCache.LocalMachine.GetAndFetchLatest<List<GitHubRepo>>(nameof(GitHubRepo), 
+			                                                           () => GetRemoteReposAsync(), 
+			                                                           offset =>
+												  					   {				
+																	  		TimeSpan elapsed = DateTimeOffset.UtcNow - offset;
+																	  		return elapsed > new TimeSpan(hours: 0, minutes: 0, seconds: 3);
+																		});
+			return await cachedRepos.FirstOrDefaultAsync();
+}
+```
+
+## Recap
+We now have a decent start to get the data out of our cache, call our API if the cache is expired, only make the call if we are connected, retry if necassary and in a prioritized way. And on top of that we're making use of the native network stack.

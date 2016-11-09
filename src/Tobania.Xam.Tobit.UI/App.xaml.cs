@@ -1,4 +1,6 @@
-﻿using Xamarin.Forms;
+﻿using Akavache;
+using Xamarin.Forms;
+using Tobania.Xam.Tobit.Config;
 
 namespace Tobania.Xam.Tobit.UI
 {
@@ -7,7 +9,7 @@ namespace Tobania.Xam.Tobit.UI
 		public App()
 		{
 			InitializeComponent();
-
+			BlobCache.ApplicationName = AppKeys.ApplicationName;
 			MainPage = new NavigationPage(new HomePage());
 		}
 
