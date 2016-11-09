@@ -53,7 +53,7 @@ public class GitHubRepo
 
 ### Fusillade
 Now we can define all our calls in the IGitHubApi interface. The problem is that we don't make a distinction between calls initiated by a user and calls that our app makes in the background. If we can give priority to the calls that a user makes, the user will get the impression that the app repsonds quicker. We can solve this problem with Fusillad. The package comes also with other features like auto-deduplication of requests and request limiting.
-Info about Refit can be found on [https://github.com/paulcbetts/Fusillade](https://github.com/paulcbetts/Fusillade)
+Info about Fusillade can be found on [https://github.com/paulcbetts/Fusillade](https://github.com/paulcbetts/Fusillade)
 
 - Install the NuGet package Refit (version 0.6.0).
 - Create a new C#-file "IGitHubServiceAgent" in the folder ServiceAgents/GitHub.
@@ -127,7 +127,9 @@ public GitHubServiceAgent()
 ```
 
 ### ModernHttpClient
-As mentioned in the Fusillade section Xamarin uses the Mono Network stack. We want to use the faster native network stacks. For that reason we use ModernHttpClient
+As mentioned in the Fusillade section Xamarin uses the Mono Network stack. We want to use the faster native network stacks. For that reason we use ModernHttpClient.
+Info about Modernhttpclient can be found on [https://github.com/paulcbetts/ModernHttpClient](https://github.com/paulcbetts/ModernHttpClient) 
+
 - Install the NuGet package Modernhttpclient (version 2.4.2).
 - Our code still gives an error on the ApiHandler. Create a new folder Helpers in the ServiceAgents folder and add a C#-file with name ApiHelper.
 - Your ApiHandler class must inherit from NativeMessageHandler (comes with the ModernHttpClient package)
@@ -155,8 +157,92 @@ protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage 
 ```
 
 ### Service calls
+After some plumbing code we can start with defining our service calls.
 
 
+- Create a new C#-file "IGitHubService" in the folder ServiceAgents/GitHub
+```C#
+public interface IGitHubService
+{
+    Task<List<GitHubRepo>> GetReposAsync();
+}
+```
+- Now add another file in the same folder with name "GitHubService" and inherit from the "IGitHubService" interface.
+- Make sure the constructor accepts an "IGitHubServiceAgent" so you can make use of the priority features that fussilade gives us.
+```C#
+private IGitHubServiceAgent serviceAgent;
 
+public GitHubService(IGitHubServiceAgent serviceAgent)
+{
+    this.serviceAgent = serviceAgent;
+}
 
+public async Task<List<GitHubRepo>> GetReposAsync()
+{
+    return await serviceAgent.UserInitiated.GetReposAsync().ConfigureAwait(false);
+}
+```
+
+### Check connectivity
+Our service calls might work now, but it's useless to start a call when your device is not connected.
+Info about the connectivity plugin can be found on [https://github.com/jamesmontemagno/ConnectivityPlugin](https://github.com/jamesmontemagno/ConnectivityPlugin)
+
+- Install the NuGet package xam.plugin.connectivity (2.2.12). 
+- When installing the NuGet package you get a readme file. You should read those files as they contain important notes from the developer. The file mentions that you should give your android app more premissions. So, in the Android project open up the AndroidManifest.xml in the properties folder. Add the following permissions between the opening and closing manifest tag:
+    - ```<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />```
+	- ```<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />```
+	- ```<uses-permission android:name="android.permission.INTERNET" />```
+- Use the connectivity plugin to verify if you have a connection before executing the API call
+```C#
+public async Task<List<GitHubRepo>> GetReposAsync()
+{
+    List<GitHubRepo> result = new List<GitHubRepo>();
+    if (CrossConnectivity.Current.IsConnected)
+    {
+        result = await serviceAgent.UserInitiated.GetReposAsync().ConfigureAwait(false);	
+    }
+    return result;
+}
+```
+
+### Retry policy
+Because the connectivity suddenly get poor when the API call is executed, you should retry your calls. We can create a retry policy with Polly.
+Info about Polly can be found on [https://github.com/App-vNext/Polly](https://github.com/App-vNext/Polly)
+
+- Install the NuGet package Polly (4.3.0)
+- Define a policy in the constructor of the GitHubService class
+```C#
+private IGitHubServiceAgent serviceAgent;
+private Policy policy;
+
+public GitHubService(IGitHubServiceAgent serviceAgent)
+{
+    this.serviceAgent = serviceAgent;
+    policy = Policy
+    .Handle<WebException>()
+    .WaitAndRetryAsync(5, retryAttempt =>
+    TimeSpan.FromSeconds(retryAttempt)
+    );
+}
+```
+- Define that your service call must use the policy
+```C#
+public async Task<List<GitHubRepo>> GetReposAsync()
+{
+    List<GitHubRepo> result = new List<GitHubRepo>();
+    if (CrossConnectivity.Current.IsConnected)
+    {
+        try
+        {
+            result = await policy.ExecuteAsync(async () => await serviceAgent.UserInitiated.GetReposAsync().ConfigureAwait(false)).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            var m = ex.Message;
+            // if you still get an error, log the exception
+        }
+    }
+    return result;
+}
+```
 

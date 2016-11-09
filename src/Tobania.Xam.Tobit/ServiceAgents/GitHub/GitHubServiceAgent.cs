@@ -3,6 +3,7 @@ using System.Net.Http;
 using Fusillade;
 using Refit;
 using Tobania.Xam.Tobit.Config;
+using Tobania.Xam.Tobit.ServiceAgents.Helpers;
 using Xamarin.Forms;
 
 namespace Tobania.Xam.Tobit.ServiceAgents.GitHub
