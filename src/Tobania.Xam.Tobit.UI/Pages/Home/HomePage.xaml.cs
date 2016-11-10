@@ -28,7 +28,7 @@ namespace Tobania.Xam.Tobit.UI
 			  });
 			MessagingCenter.Subscribe<HomeViewModel>(this, MessageKeys.NavigateToRepos, async _ =>
 			  {
-				  await Navigation.PushModalAsync(new ReposPage());
+				  await Navigation.PushAsync(new ReposPage());
 			  });
 			base.OnAppearing();
 		}

@@ -10,7 +10,7 @@ namespace Tobania.Xam.Tobit.ViewModels
 	public class HomeViewModel: BaseViewModel
 	{
 
-		public void Init()
+		public void Initialize()
 		{
 			((Command)GitHubReposCommand).ChangeCanExecute();
 		}

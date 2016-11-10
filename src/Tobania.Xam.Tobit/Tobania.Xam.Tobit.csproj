@@ -42,6 +42,7 @@
     <Compile Include="ViewModels\INotifyPropertyChanging.cs" />
     <Compile Include="ViewModels\HomeViewModel.cs" />
     <Compile Include="Config\MessageKeys.cs" />
+    <Compile Include="ViewModels\ReposViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">

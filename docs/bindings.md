@@ -208,3 +208,88 @@ protected override void OnDisappearing()
     base.OnDisappearing();
 }
 ```
+
+
+### The ReposViewModel
+In the ReposViewModel we'll finally make use of our GitHub service agent.
+
+- Create a new C#-file ReposViewModel in th ViewModels folder.
+- Inherit form BaseViewModel
+- Create in the constructor an instance of GitHubService (for which you'll need to pass an instance of GitHubServiceAgent)
+
+```C#
+private IGitHubService gitHubService;
+public ReposViewModel()
+{
+    IGitHubServiceAgent gitHubServiceAgent = new GitHubServiceAgent();
+    gitHubService = new GitHubService(gitHubServiceAgent);
+}
+```
+
+- Create a command to load the data
+
+```C#
+private ICommand loadDataCommand;
+public ICommand LoadDataCommand
+{
+    get { return loadDataCommand ?? (loadDataCommand = new Command(async () => await ExecuteLoadDataCommand())); }
+}
+```
+
+- Implement the ExecuteLoadDataCommand. 
+
+```C#
+private async Task ExecuteLoadDataCommand()
+{
+    GitHubRepos = new ObservableCollection<GitHubRepo>(await gitHubService.GetReposAsync());
+}
+```
+
+- We also need a collection of all the GitHubRepo objects we receive from our cache or from GitHub. Because our View need to be able to bind to that colleciton we create a bindable property.
+
+```C#
+private ObservableCollection<GitHubRepo> gitHubRepos = new ObservableCollection<GitHubRepo>();
+public ObservableCollection<GitHubRepo> GitHubRepos
+{
+    get { return gitHubRepos; }
+    set { SetProperty(ref gitHubRepos, value); }
+}
+```
+
+### The ReposPage
+- In the ReposPage.xaml.cs you need to set the Bindingcontext to our ReposViewModel (just like we did with the HomePage)
+
+```C#
+public ReposPage()
+{
+    BindingContext = new ReposViewModel();
+    InitializeComponent();
+}
+
+private ReposViewModel ViewModel
+{
+    get { return BindingContext as ReposViewModel; }
+}
+
+```
+
+- When the page appears we want to tell the ViewModel to load the data. You should not load data in the constructor of your Page as it will slow down your app experience.
+
+```C#
+protected override void OnAppearing()
+{
+    base.OnAppearing();
+    ViewModel.LoadDataCommand.Execute(null);
+}
+```
+
+- In the ReposPage.xaml we need to bind our ListView to the list of GitHubRepo objects
+```html
+<ListView x:Name="ReposList" ItemsSource="{Binding GitHubRepos}">
+```
+
+- finally we want to bind the labels from our ReposCell to properties of a GitHubRepo. The bindings for the labels should already be in place in the ReposCell.xaml
+```html
+<Label x:Name="RepoName" Text="{Binding Name}" FontSize="Small" />
+<Label x:Name="RepoFullName" Text="{Binding FullName}" FontSize="Micro" />
+```
