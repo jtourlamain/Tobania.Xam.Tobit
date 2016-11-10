@@ -4,7 +4,7 @@
 		xmlns:ui="clr-namespace:Tobania.Xam.Tobit.UI;assembly=Tobania.Xam.Tobit.UI" 
 		x:Class="Tobania.Xam.Tobit.UI.ReposPage">
 	<ContentPage.Content>
-		<ListView x:Name="ReposList">
+		<ListView x:Name="ReposList" ItemsSource="{Binding GitHubRepos}">
 			<ListView.ItemTemplate>
 				<DataTemplate>
 					<ViewCell>

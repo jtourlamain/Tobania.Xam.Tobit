@@ -6,8 +6,8 @@
 	<ContentPage.Content>
 		<StackLayout VerticalOptions="Center" HorizontalOptions="Center">
 		    <Label Text="Tobit demo" />
-		    <Button Text="Login" />
-		    <Button Text="GitHubRepos" />
+		    <Button Text="Login" Command="{Binding LoginCommand}" />
+		    <Button Text="GitHubRepos" Command="{Binding GitHubReposCommand}" />
 		</StackLayout>
 	</ContentPage.Content>
 </ContentPage>
