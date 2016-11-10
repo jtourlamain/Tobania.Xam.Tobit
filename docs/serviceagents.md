@@ -272,6 +272,7 @@ public async Task<List<GitHubRepo>> GetReposAsync()
 ### Caching
 You should avoid requesting the data all the time by caching it. Your users will be grateful that you don't spoil their data plan, they will have the impression that your app runs faster and less calls to your backend means less costs.
 For caching we'll make use of Akavache. Behind the scenes akavache makes use of SQLite. Optimizing your code to use SQLite is hard. The Akavache library contains all the hard work, so our job gets a lot easier.
+Info about Akavache can be found on [https://github.com/akavache/Akavache](https://github.com/akavache/Akavache)
 
 - Install the NuGet package Akavache (4.1.2) (you also need to install this package in the UI project)
 - In the App.cs constructor set the akavache application name

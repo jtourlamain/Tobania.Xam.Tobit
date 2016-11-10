@@ -9,13 +9,28 @@ Because I wanted to show you a working example, this repository contains a Xamar
 
 
 ## Getting started
-- A tutorial can be found in the docs of this repo: [docs/tutorial.md](docs/tutorial.md)
+- A full tutorial can be found in the docs of this repo: [docs/tutorial.md](docs/tutorial.md)
 - The code can be found in the src folder.
 
 
 ## Platform support
 - iOS (min 9.3)
 - Android (min 5.0)
+
+## References
+### Articles
+- I've based this tutorial on [an article of Rob Gibbens](http://arteksoftware.com/resilient-network-services-with-xamarin/).
+- I got a lot of inspiration from the [Evolve app](https://github.com/xamarinhq/app-evolve) from [James Montemagno](https://twitter.com/jamesmontemagno)
+### NuGet packages
+- [Refit](https://github.com/paulcbetts/refit) (By Paul Betts)
+- [Fusillade](https://github.com/paulcbetts/Fusillade) (By Paul Betts)
+- [ModernHttpClient](https://github.com/paulcbetts/ModernHttpClient) (By Paul Betts)
+- [ConnectivityPlugin](https://github.com/jamesmontemagno/ConnectivityPlugin) (By James Montemagno)
+- [Polly](https://github.com/App-vNext/Polly) (By Michael Wolfenden)
+- [Akavache](https://github.com/akavache/Akavache) (By Paul Betts)
+### Xamarin Components
+- [Xamarin.Auth](https://components.xamarin.com/view/xamarin.auth) (By Xamarin)
+
 
 ## Contributors
 
