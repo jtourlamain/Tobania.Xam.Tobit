@@ -75,12 +75,136 @@ public class BaseViewModel : INotifyPropertyChanged, INotifyPropertyChanging
 private ICommand loginCommand;
 public ICommand LoginCommand
 {
-get { return loginCommand ?? (loginCommand = new Command(async () => await ExecuteLoginCommand())); }
+get { return loginCommand ?? (loginCommand = new Command(() => ExecuteLoginCommand())); }
 }
 private ICommand gitHubReposCommand;
 public ICommand GitHubReposCommand
 {
-get { return gitHubReposCommand ?? (gitHubReposCommand = new Command(async () => await ExecuteGitHubReposCommand())); }
+get { return gitHubReposCommand ?? (gitHubReposCommand = new Command(() => ExecuteGitHubReposCommand())); }
 }
 #endregion
+```
+
+- The ExecuteLoginCommand and the ExecuteGitHubReposCommand need to navigate to another page. The Pages however are in our UI project. Remember in MVVM you ViewModel may not know about your View. We can solve that problem via the MessagingService build into Xamarin.Forms
+- Create a C#-file MessageKeys in the Config folder.
+
+```C#
+public static class MessageKeys
+{
+    public const string NavigateToLogin = "navigate_login";
+	public const string NavigateToRepos = "navigate_repos";
+}
+```
+
+- Implement the ExecuteLoginCommand and the ExecuteGitHubReposCommand
+
+```C#
+private void  ExecuteLoginCommand()
+{
+    if (IsBusy)
+        return;
+    MessagingCenter.Send<HomeViewModel>(this, MessageKeys.NavigateToLogin);
+    IsBusy = false;
+}
+
+private void ExecuteGitHubReposCommand()
+{
+    if (IsBusy)
+        return;
+    IsBusy = true;
+    MessagingCenter.Send<HomeViewModel>(this, MessageKeys.NavigateToRepos);
+        IsBusy = false;
+}
+```
+
+ - We shouldn't be able to execute the GitHubReposCommand when we're not authenticated. So add a method IsAuthenticated and add the check to our GitHubReposCommand
+    
+```C#
+private ICommand gitHubReposCommand;
+public ICommand GitHubReposCommand
+{
+    get { return gitHubReposCommand ?? (gitHubReposCommand = new Command(() => ExecuteGitHubReposCommand(),() => IsAuthenticated())); }
+}
+
+private bool IsAuthenticated()
+{
+    try
+    {
+        if (!string.IsNullOrEmpty(Application.Current.Properties[ApiKeys.AccessToken].ToString()))
+        {
+            return true;
+        }
+        return false;
+    }
+    catch (KeyNotFoundException)
+    {
+        return false;
+    }
+}
+```
+
+- Each time the HomePage is loaded, we should check again if the user is authenticated to enable/disable the butten. But, our viewmodel doesn't know when it must check. So create an Initialize method that triggers the GitHubReposCommand to check it's canExecute parameter
+
+```C#
+public void Initialize()
+{
+    ((Command)GitHubReposCommand).ChangeCanExecute();
+}
+```
+
+### Bind the HomePage
+Now we have our HomViewModel, we can bind the HomePage
+- In HomePage.xaml bind the two buttons to the commands we created in the HomeViewModel
+
+```html
+<Button Text="Login" Command="{Binding LoginCommand}" />
+<Button Text="GitHubRepos" Command="{Binding GitHubReposCommand}" />
+```        
+
+- In the HomePage.xaml.cs we need to set our BindingContext to an instance of our HomeViewModel
+
+```C#
+public HomePage()
+{
+    BindingContext = new HomeViewModel();
+    InitializeComponent();
+}
+```
+
+- You can add a private property to your page so you can alwasy call ViewModel (so you don't have to remember which viewmodel you are using in the rest of the code of your page). 
+
+```C#
+private HomeViewModel ViewModel
+{
+    get { return BindingContext as HomeViewModel; }
+}
+```
+
+- Our HomePage needs to Initialize the ViewModel and listen to the MessagingCenter if we get a trigger to navigate (sent from the HomeViewModel)
+
+```C#
+protected override void OnAppearing()
+{
+    ViewModel.Initialize();
+    MessagingCenter.Subscribe<HomeViewModel>(this, MessageKeys.NavigateToLogin, async _ =>
+    {
+        await Navigation.PushModalAsync(new LoginPage());
+    });
+    MessagingCenter.Subscribe<HomeViewModel>(this, MessageKeys.NavigateToRepos, async _ =>
+    {
+        await Navigation.PushModalAsync(new ReposPage());
+    });
+    base.OnAppearing();
+}
+```
+
+- When you subscribe to events or messages on the MessagingCenter you should **ALWAYS** unsubscribe to avoid memory leaks
+
+```C#
+protected override void OnDisappearing()
+{
+    MessagingCenter.Unsubscribe<HomeViewModel>(this, MessageKeys.NavigateToLogin);
+    MessagingCenter.Unsubscribe<HomeViewModel>(this, MessageKeys.NavigateToRepos);
+    base.OnDisappearing();
+}
 ```

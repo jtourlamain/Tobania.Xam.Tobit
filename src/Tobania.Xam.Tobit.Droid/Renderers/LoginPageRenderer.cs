@@ -5,6 +5,7 @@ using Xamarin.Forms.Platform.Android;
 using Tobania.Xam.Tobit.Droid.Renderers;
 using Android.App;
 using Tobania.Xam.Tobit.Config;
+using Xamarin.Auth;
 
 [assembly: ExportRenderer(typeof(LoginPage), typeof(LoginPageRenderer))]
 namespace Tobania.Xam.Tobit.Droid.Renderers
