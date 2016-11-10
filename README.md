@@ -31,6 +31,8 @@ Because I wanted to show you a working example, this repository contains a Xamar
 ### Xamarin Components
 - [Xamarin.Auth](https://components.xamarin.com/view/xamarin.auth) (By Xamarin)
 
+## Thanks
+Thank you Tobania for giving me time to write this tutorial. [More info about Tobania](https://www.tobania.be)
 
 ## Contributors
 
