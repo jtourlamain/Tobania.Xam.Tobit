@@ -38,6 +38,10 @@
     <Compile Include="ServiceAgents\GitHub\GitHubService.cs" />
     <Compile Include="AkavacheSqliteLinkerOverride.cs" />
     <Compile Include="Config\AppKeys.cs" />
+    <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\INotifyPropertyChanging.cs" />
+    <Compile Include="ViewModels\HomeViewModel.cs" />
+    <Compile Include="Config\MessageKeys.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
