@@ -30,6 +30,10 @@ By separating your UI from the other projects you'll be forced to respect that p
 
 ### Solution housekeeping
 - Update the Xamarin.Forms NuGet packages to the latest version (currently 2.3.2.127)
+- PCL projects are based on profiles (to know which platform is compatible). Make sure the Tobania.Xam.Tobit has profile 7. The packages we're using are not compatible with all platforms.
+
+![Setup Profile](art/project_profile.png)
+
 - Verify the target frameworks on iOS and Android
     - Android minimum version level 21, target version 23
     - iOS (cf ino.plist file) deployment target 9.3
