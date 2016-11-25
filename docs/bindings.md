@@ -10,7 +10,7 @@ We'll start with creating a BaseViewModel that will help us out with the impleme
 
 - Create a new C#-file "INotifyPropertyChanging" in the ViewModels folder of the Tobania.Xam.Tobit project
 
-```C#
+```
 public interface INotifyPropertyChanging
 {
     event EventHandler<PropertyChangingEventArgs> PropertyChanging;
@@ -19,7 +19,7 @@ public interface INotifyPropertyChanging
 
 - Create a new C#-file "BaseViewModel" in the ViewModels folder of the Tobania.Xam.Tobit project
 
-```C#
+```
 public class BaseViewModel : INotifyPropertyChanged, INotifyPropertyChanging
 {
     private bool _isBusy;
@@ -70,7 +70,7 @@ public class BaseViewModel : INotifyPropertyChanged, INotifyPropertyChanging
 - Inherit form BaseViewModel
 - We'll need a command for the login button of our HomePage and a command to navigate to our repositories
 
-```C#
+```
 #region Commands
 private ICommand loginCommand;
 public ICommand LoginCommand
@@ -88,7 +88,7 @@ get { return gitHubReposCommand ?? (gitHubReposCommand = new Command(() => Execu
 - The ExecuteLoginCommand and the ExecuteGitHubReposCommand need to navigate to another page. The Pages however are in our UI project. Remember in MVVM you ViewModel may not know about your View. We can solve that problem via the MessagingService build into Xamarin.Forms
 - Create a C#-file MessageKeys in the Config folder.
 
-```C#
+```
 public static class MessageKeys
 {
     public const string NavigateToLogin = "navigate_login";
@@ -98,7 +98,7 @@ public static class MessageKeys
 
 - Implement the ExecuteLoginCommand and the ExecuteGitHubReposCommand
 
-```C#
+```
 private void  ExecuteLoginCommand()
 {
     if (IsBusy)
@@ -119,7 +119,7 @@ private void ExecuteGitHubReposCommand()
 
  - We shouldn't be able to execute the GitHubReposCommand when we're not authenticated. So add a method IsAuthenticated and add the check to our GitHubReposCommand
     
-```C#
+```
 private ICommand gitHubReposCommand;
 public ICommand GitHubReposCommand
 {
@@ -145,7 +145,7 @@ private bool IsAuthenticated()
 
 - Each time the HomePage is loaded, we should check again if the user is authenticated to enable/disable the butten. But, our viewmodel doesn't know when it must check. So create an Initialize method that triggers the GitHubReposCommand to check it's canExecute parameter
 
-```C#
+```
 public void Initialize()
 {
     ((Command)GitHubReposCommand).ChangeCanExecute();
@@ -163,7 +163,7 @@ Now we have our HomViewModel, we can bind the HomePage
 
 - In the HomePage.xaml.cs we need to set our BindingContext to an instance of our HomeViewModel
 
-```C#
+```
 public HomePage()
 {
     BindingContext = new HomeViewModel();
@@ -173,7 +173,7 @@ public HomePage()
 
 - You can add a private property to your page so you can alwasy call ViewModel (so you don't have to remember which viewmodel you are using in the rest of the code of your page). 
 
-```C#
+```
 private HomeViewModel ViewModel
 {
     get { return BindingContext as HomeViewModel; }
@@ -182,7 +182,7 @@ private HomeViewModel ViewModel
 
 - Our HomePage needs to Initialize the ViewModel and listen to the MessagingCenter if we get a trigger to navigate (sent from the HomeViewModel)
 
-```C#
+```
 protected override void OnAppearing()
 {
     ViewModel.Initialize();
@@ -200,7 +200,7 @@ protected override void OnAppearing()
 
 - When you subscribe to events or messages on the MessagingCenter you should **ALWAYS** unsubscribe to avoid memory leaks
 
-```C#
+```
 protected override void OnDisappearing()
 {
     MessagingCenter.Unsubscribe<HomeViewModel>(this, MessageKeys.NavigateToLogin);
@@ -217,7 +217,7 @@ In the ReposViewModel we'll finally make use of our GitHub service agent.
 - Inherit form BaseViewModel
 - Create in the constructor an instance of GitHubService (for which you'll need to pass an instance of GitHubServiceAgent)
 
-```C#
+```
 private IGitHubService gitHubService;
 public ReposViewModel()
 {
@@ -228,7 +228,7 @@ public ReposViewModel()
 
 - Create a command to load the data
 
-```C#
+```
 private ICommand loadDataCommand;
 public ICommand LoadDataCommand
 {
@@ -238,7 +238,7 @@ public ICommand LoadDataCommand
 
 - Implement the ExecuteLoadDataCommand. 
 
-```C#
+```
 private async Task ExecuteLoadDataCommand()
 {
     GitHubRepos = new ObservableCollection<GitHubRepo>(await gitHubService.GetReposAsync());
@@ -247,7 +247,7 @@ private async Task ExecuteLoadDataCommand()
 
 - We also need a collection of all the GitHubRepo objects we receive from our cache or from GitHub. Because our View need to be able to bind to that colleciton we create a bindable property.
 
-```C#
+```
 private ObservableCollection<GitHubRepo> gitHubRepos = new ObservableCollection<GitHubRepo>();
 public ObservableCollection<GitHubRepo> GitHubRepos
 {
@@ -259,7 +259,7 @@ public ObservableCollection<GitHubRepo> GitHubRepos
 ### The ReposPage
 - In the ReposPage.xaml.cs you need to set the Bindingcontext to our ReposViewModel (just like we did with the HomePage)
 
-```C#
+```
 public ReposPage()
 {
     BindingContext = new ReposViewModel();
@@ -270,12 +270,11 @@ private ReposViewModel ViewModel
 {
     get { return BindingContext as ReposViewModel; }
 }
-
 ```
 
 - When the page appears we want to tell the ViewModel to load the data. You should not load data in the constructor of your Page as it will slow down your app experience.
 
-```C#
+```
 protected override void OnAppearing()
 {
     base.OnAppearing();
@@ -284,12 +283,12 @@ protected override void OnAppearing()
 ```
 
 - In the ReposPage.xaml we need to bind our ListView to the list of GitHubRepo objects
-```html
+```
 <ListView x:Name="ReposList" ItemsSource="{Binding GitHubRepos}">
 ```
 
 - finally we want to bind the labels from our ReposCell to properties of a GitHubRepo. The bindings for the labels should already be in place in the ReposCell.xaml
-```html
+```
 <Label x:Name="RepoName" Text="{Binding Name}" FontSize="Small" />
 <Label x:Name="RepoFullName" Text="{Binding FullName}" FontSize="Micro" />
 ```

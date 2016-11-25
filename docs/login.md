@@ -20,7 +20,7 @@ That's all we need to do in the shared code.
 - Your class should inherit from PageRenderer (found in the namespace Xamarin.Forms.Platform.iOS)
 - Override the ViewDidAppear method. There seems to be a bug in the iOS version that reopens your login window each time your login was successfull. You can avoid the loop by setting the MainPage of your application
 
-```C#
+```
 public override async void ViewDidAppear(bool animated)
 {
     base.ViewDidAppear(animated);
@@ -52,7 +52,7 @@ public override async void ViewDidAppear(bool animated)
 
 - The last thing we need to do is tell Xamarin.Forms that every time we ask a LoginPage, we wat it to take our LoginPageRenderer. In your LoginPageRenderer *above* your namespace declaration place the following
 
-```C#
+```
 [assembly: ExportRenderer(typeof(LoginPage), typeof(LoginPageRenderer))]
 ```
 
@@ -61,7 +61,7 @@ public override async void ViewDidAppear(bool animated)
 - In the renderers folder create a new C#-file "LoginPageRenderer"
 - Your class should inherit from PageRenderer (found in the namespace Xamarin.Forms.Platform.Android)
 
-```C#
+```
 public class LoginPageRenderer: PageRenderer
 {
     bool done = false;
@@ -103,6 +103,6 @@ public class LoginPageRenderer: PageRenderer
 
 - The last thing we need to do is tell Xamarin.Forms that every time we ask a LoginPage, we wat it to take our LoginPageRenderer. In your LoginPageRenderer *above* your namespace declaration place the following
 
-```C#
+```
 [assembly: ExportRenderer(typeof(LoginPage), typeof(LoginPageRenderer))]
 ```

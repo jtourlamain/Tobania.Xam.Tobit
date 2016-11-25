@@ -23,7 +23,7 @@ Info about Refit can be found on [https://github.com/paulcbetts/refit](https://g
 - Refit allows us to define an interface that describes the API we'll be interacting with. Refit will do the hard work and make an implementation for us. So, create a new C#-file IGitHubApi in the folder you just created. 
 - We want to call the repos of the logged in user. The interface looks like this:
 
-```c#
+```
 [Headers("Authorization: Bearer", "Accept: application/vnd.github.v3+json", "User-Agent: Tobit")]
 public interface IGitHubApi
 {
@@ -40,7 +40,7 @@ The GetReposAsync method returns a Task<List<GItHubRepo>>. We'll create that fil
 - Create a C#-file GitHubRepo in the folder Models
 - Add the following code to the file
 
-```C#
+```
 public class GitHubRepo
 {
     public int Id { get; set; }
@@ -61,7 +61,7 @@ Info about Fusillade can be found on [https://github.com/paulcbetts/Fusillade](h
 - Create a new C#-file "IGitHubServiceAgent" in the folder ServiceAgents/GitHub.
 - Define the 3 different ways to make calls via fussilade
 
-```C#
+```
 public interface IGitHubServiceAgent
 {
     IGitHubApi UserInitiated { get; }
@@ -73,7 +73,7 @@ public interface IGitHubServiceAgent
 - In the same folder create a C#-file "GitHubServiceAgent" that implements the "IGitHubServiceAgent" interface.
 - In the constructor create a function that returns an instance of the IGitHubApi (created by Refit). We could just use the following code:
 
-```C#
+```
 Func<IGitHubApi> createClient = () => 
 {
     return RestService.For<IGitHubApi>("https://api.github.com");
@@ -86,7 +86,7 @@ There are some problems with this approach:
 - We can't manipulate the calls (like injecting the token on the Authorization header).
 So, we'll change our function into:
 
-```C#
+```
 Func<HttpMessageHandler, IGitHubApi> createClient = messageHandler =>
 {
     var client = new HttpClient(messageHandler)
@@ -100,7 +100,7 @@ Func<HttpMessageHandler, IGitHubApi> createClient = messageHandler =>
 
 - Create in the constructor a function that returns our accessToken:
 
-```C#
+```
 Func<string> createAuthHeader = () =>
 {
     return Application.Current.Properties[ApiKeys.AccessToken].ToString();
@@ -109,7 +109,7 @@ Func<string> createAuthHeader = () =>
 
 - The last thing we need to do is link the creation of the Refit services with Fusillade. Also in the constructor add:
 
-```C#
+```
 userInitiated = new Lazy<IGitHubApi>(() => createClient(new RateLimitedHttpMessageHandler(new ApiHandler(createAuthHeader), Priority.UserInitiated)));
 background = new Lazy<IGitHubApi>(() => createClient(new RateLimitedHttpMessageHandler(new ApiHandler(createAuthHeader), Priority.Background)));
 speculative = new Lazy<IGitHubApi>(() => createClient(new RateLimitedHttpMessageHandler(new ApiHandler(createAuthHeader), Priority.Speculative)));
@@ -117,7 +117,7 @@ speculative = new Lazy<IGitHubApi>(() => createClient(new RateLimitedHttpMessage
 
 Your GitHubServiceAgent constructor should now look like:
 
-```C#
+```
 public GitHubServiceAgent()
 {
     Func<HttpMessageHandler, IGitHubApi> createClient = messageHandler =>
@@ -148,7 +148,7 @@ Info about Modernhttpclient can be found on [https://github.com/paulcbetts/Moder
 - Your ApiHandler class must inherit from NativeMessageHandler (comes with the ModernHttpClient package)
 - In the constructor we accept the func to get the token
 
-```C#
+```
 private readonly Func<string> getToken;
 
 public ApiHandler(Func<string> getToken)
@@ -159,7 +159,7 @@ public ApiHandler(Func<string> getToken)
 
 - Override the SendAsync method and check if you need to add the token before the request is actually made
 
-```C#
+```
 protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
 {
     var auth = request.Headers.Authorization;
@@ -178,7 +178,7 @@ After some plumbing code we can start with defining our service calls.
 
 - Create a new C#-file "IGitHubService" in the folder ServiceAgents/GitHub
 
-```C#
+```
 public interface IGitHubService
 {
     Task<List<GitHubRepo>> GetReposAsync();
@@ -188,7 +188,7 @@ public interface IGitHubService
 - Now add another file in the same folder with name "GitHubService" and inherit from the "IGitHubService" interface.
 - Make sure the constructor accepts an "IGitHubServiceAgent" so you can make use of the priority features that fussilade gives us
 
-```C#
+```
 private IGitHubServiceAgent serviceAgent;
 
 public GitHubService(IGitHubServiceAgent serviceAgent)
@@ -213,7 +213,7 @@ Info about the connectivity plugin can be found on [https://github.com/jamesmont
 	- ```<uses-permission android:name="android.permission.INTERNET" />```
 - Use the connectivity plugin to verify if you have a connection before executing the API call
 
-```C#
+```
 public async Task<List<GitHubRepo>> GetReposAsync()
 {
     List<GitHubRepo> result = new List<GitHubRepo>();
@@ -232,7 +232,7 @@ Info about Polly can be found on [https://github.com/App-vNext/Polly](https://gi
 - Install the NuGet package Polly (4.3.0)
 - Define a policy in the constructor of the GitHubService class
 
-```C#
+```
 private IGitHubServiceAgent serviceAgent;
 private Policy policy;
 
@@ -249,7 +249,7 @@ public GitHubService(IGitHubServiceAgent serviceAgent)
 
 - Define that your service call must use the policy
 
-```C#
+```
 public async Task<List<GitHubRepo>> GetReposAsync()
 {
     List<GitHubRepo> result = new List<GitHubRepo>();
@@ -277,13 +277,13 @@ Info about Akavache can be found on [https://github.com/akavache/Akavache](https
 - Install the NuGet package Akavache (4.1.2) (you also need to install this package in the UI project)
 - In the App.cs constructor set the akavache application name
 
-```C#
+```
 BlobCache.ApplicationName = AppKeys.ApplicationName;
 ```
 
 - Create a new C#-file "AppKeys.cs" in the config folder of the project Tobania.Xam.Tobit
 
-```C#
+```
 public static class AppKeys
 {
     public const string ApplicationName = "EntDemo";
@@ -293,7 +293,7 @@ public static class AppKeys
 - Now we'll change our GitHubService class to use the cached version of the data and retrieve the real data async if the data in the cache is older than 5 seconds. First in the GitHubService class change the methodname "GetReposAsync" to "GetRemoteReposAsync"
 - Add a GetReposAsync method with the same signature as before and request the data from the cache
 
-```C#
+```
 public async Task<List<GitHubRepo>> GetReposAsync()
 {
     var cachedRepos = BlobCache.LocalMachine.GetAndFetchLatest<List<GitHubRepo>>(nameof(GitHubRepo), 
