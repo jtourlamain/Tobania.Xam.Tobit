@@ -1,7 +1,9 @@
 ﻿using Akavache;
 using Xamarin.Forms;
 using Tobania.Xam.Tobit.Config;
+using Xamarin.Forms.Xaml;
 
+[assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace Tobania.Xam.Tobit.UI
 {
 	public partial class App : Application
