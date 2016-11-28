@@ -4,8 +4,8 @@
 		x:Class="Tobania.Xam.Tobit.UI.ReposCell">
 	<ContentView.Content>
 		<StackLayout Margin="20,0,20,0">
-			<Label x:Name="RepoName" Text="{Binding Name}" FontSize="Small" />
-			<Label x:Name="RepoFullName" Text="{Binding FullName}" FontSize="Micro" />
+			<Label x:Name="RepoName" Text="{Binding Name}" FontSize="Small" LineBreakMode="NoWrap" />
+			<Label x:Name="RepoFullName" Text="{Binding FullName}" FontSize="Micro" LineBreakMode="NoWrap" />
 		</StackLayout>
 	</ContentView.Content>
 </ContentView>

@@ -74,12 +74,12 @@ public App()
 
 ### ReposCell
 - Create a new ContentView XAML file "ReposCell" in the Cells folder. Change the namespace in the same way you did for the HomePage.
-- We'll use a stacklayout to show the name of the repository and the full name. We'll bind to those properties and we make the font sizes a bit smaller. Like in html it's not a good idea to change font sizes in each xaml file. You should use the Application.Resources section in the App.xaml file (or create a static file with resources). Again, focus here is not on layout, so we just change the font size in our ReposCell.xaml file.
+- We'll use a stacklayout to show the name of the repository and the full name. We'll bind to those properties and we make the font sizes a bit smaller. Like in html it's not a good idea to change font sizes in each xaml file. You should use the Application.Resources section in the App.xaml file (or create a static file with resources). Again, focus here is not on layout, so we just change the font size in our ReposCell.xaml file. The wrapping option is added for performance reasons. No wrapping is faster than letting XForms calculate where to wrap and adapt the height of your row.
 
 ```
 <StackLayout Margin="20,0,20,0">
-    <Label x:Name="RepoName" Text="{Binding Name}" FontSize="Small" />
-    <Label x:Name="RepoFullName" Text="{Binding FullName}" FontSize="Micro" />
+    <Label x:Name="RepoName" Text="{Binding Name}" FontSize="Small" LineBreakMode="NoWrap" />
+    <Label x:Name="RepoFullName" Text="{Binding FullName}" FontSize="Micro" LineBreakMode="NoWrap" />
 </StackLayout>
 ```
 
