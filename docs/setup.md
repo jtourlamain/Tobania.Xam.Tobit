@@ -34,6 +34,9 @@ By separating your UI from the other projects you'll be forced to respect that p
 
 ![Setup Profile](art/project_profile.png)
 
+On Visual Studio you can change your profile like:
+![Setup Profile](art/project_profile_vs.png)
+
 - Verify the target frameworks on iOS and Android
     - Android minimum version level 21, target version 23
     - iOS (cf ino.plist file) deployment target 9.3
